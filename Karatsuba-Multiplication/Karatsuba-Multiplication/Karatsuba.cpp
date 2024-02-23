@@ -33,15 +33,15 @@ std::string Karatsuba::MultiplyNumbers(const std::string& firstNumber, const std
 		else if (chr != '-')
 			secondNumberWithoutDot += chr;
 	}
-	RemoveFrontZeros(firstNumberWithoutDot);
-	RemoveFrontZeros(secondNumberWithoutDot);
+	RemoveLeadingZeros(firstNumberWithoutDot);
+	RemoveLeadingZeros(secondNumberWithoutDot);
 
 	std::string result = KaratsubaAlgorithm(firstNumberWithoutDot, secondNumberWithoutDot);
 
 	if (decimalsCountAfterDot != 0)
 	{
 		if (decimalsCountAfterDot >= result.length())
-			AddFrontZeros(result, decimalsCountAfterDot + 1);
+			AddLeadingZeros(result, decimalsCountAfterDot + 1);
 		result += '.';
 		for (int index = result.length() - 1; index >= result.length() - decimalsCountAfterDot; index--)
 			std::swap(result[index], result[index - 1]);
@@ -76,11 +76,11 @@ std::string Karatsuba::KaratsubaAlgorithm(std::string firstNumber, std::string s
 
 	int n = secondNumber.length();
 
-	std::string firstNumberFirstHalf = Half(firstNumber, 0, firstNumber.length() - (secondNumber.length() / 2));
-	std::string firstNumberSecondHalf = Half(firstNumber, firstNumber.length() - (secondNumber.length() / 2), firstNumber.length());
+	std::string firstNumberFirstHalf = Split(firstNumber, 0, firstNumber.length() - (secondNumber.length() / 2));
+	std::string firstNumberSecondHalf = Split(firstNumber, firstNumber.length() - (secondNumber.length() / 2), firstNumber.length());
 
-	std::string secondNumberFirstHalf = Half(secondNumber, 0, secondNumber.length() / 2);
-	std::string secondNumberSecondHalf = Half(secondNumber, secondNumber.length() / 2, secondNumber.length());
+	std::string secondNumberFirstHalf = Split(secondNumber, 0, secondNumber.length() / 2);
+	std::string secondNumberSecondHalf = Split(secondNumber, secondNumber.length() / 2, secondNumber.length());
 
 	std::string ac = KaratsubaAlgorithm(firstNumberFirstHalf, secondNumberFirstHalf);
 	std::string bd = KaratsubaAlgorithm(firstNumberSecondHalf, secondNumberSecondHalf);
@@ -94,13 +94,13 @@ std::string Karatsuba::KaratsubaAlgorithm(std::string firstNumber, std::string s
 	return result;
 }
 
-void Karatsuba::AddFrontZeros(std::string& number, int length)
+void Karatsuba::AddLeadingZeros(std::string& number, int length)
 {
 	for (int i = number.length(); i < length; i++)
 		number = '0' + number;
 }
 
-void Karatsuba::RemoveFrontZeros(std::string& number)
+void Karatsuba::RemoveLeadingZeros(std::string& number)
 {
 	int i = 0;
 	while (i < number.length() && number[i] == '0')
@@ -157,7 +157,7 @@ std::string Karatsuba::Addition(const std::string& firstNumber, const std::strin
 		std::swap(number1WithoutDecimals, number2WithoutDecimals);
 
 	if (number2WithoutDecimals.length() < number1WithoutDecimals.length())
-		AddFrontZeros(number2WithoutDecimals, number1WithoutDecimals.length());
+		AddLeadingZeros(number2WithoutDecimals, number1WithoutDecimals.length());
 
 	std::string add;
 	int carry = 0;
@@ -174,7 +174,9 @@ std::string Karatsuba::Addition(const std::string& firstNumber, const std::strin
 	}
 	if (carry)
 		add = std::to_string(1) + add;
-	RemoveFrontZeros(add);
+
+	RemoveLeadingZeros(add);
+
 	int maxDecimals = std::max(digitsAfterDotFirstNumber, digitsAfterDotSecondNumber);
 	if (digitsAfterDotFirstNumber || digitsAfterDotSecondNumber) {
 
@@ -215,10 +217,10 @@ std::string Karatsuba::Subtraction(const std::string& firstNumber, const std::st
 	std::string tempSecondNumber = secondNumber;
 
 	if (tempFirstNumber.length() < tempSecondNumber.length())
-		AddFrontZeros(tempFirstNumber, tempSecondNumber.length());
+		AddLeadingZeros(tempFirstNumber, tempSecondNumber.length());
 
 	if (tempSecondNumber.length() < tempFirstNumber.length())
-		AddFrontZeros(tempSecondNumber, tempFirstNumber.length());
+		AddLeadingZeros(tempSecondNumber, tempFirstNumber.length());
 
 	int carry = 0;
 	for (int i = tempFirstNumber.length() - 1; i >= 0; i--)
@@ -249,12 +251,12 @@ std::string Karatsuba::Subtraction(const std::string& firstNumber, const std::st
 		}
 		sub = std::to_string(dif) + sub;
 	}
-	RemoveFrontZeros(sub);
+	RemoveLeadingZeros(sub);
 	if (sub.length() < 1)
 		sub += '0';
 	return sub;
 }
-std::string Karatsuba::Half(const std::string& number, int begin, int end)
+std::string Karatsuba::Split(const std::string& number, int begin, int end)
 {
 	std::string hlf;
 	for (int i = begin; i < end; i++)
