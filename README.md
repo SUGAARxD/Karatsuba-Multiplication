@@ -1,5 +1,5 @@
 # Karatsuba-Multiplication
-This program uses Karatsuba's fast multiplication algorithm to multiply two big numbers represented as strings.
+This program uses Karatsuba's fast multiplication algorithm to multiply two large numbers represented as strings.
 # Karatsuba Algorithm
 
 The Karatsuba algorithm is a fast multiplication algorithm based on the divide-and-conquer strategy.
